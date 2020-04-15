@@ -9,36 +9,32 @@ let songs= {
     src: "https://311576-17.web1.fh-htwchur.ch/visualisierung/songs/Seen-a-Good-Man.mp3"
   },
   nr2: {
-    titel: "Words by Birdy",
-    src: "https://311576-17.web1.fh-htwchur.ch/visualisierung/songs/Birdy-Words.mp3"
+    titel: "Come On Down",
+    src: "https://311576-17.web1.fh-htwchur.ch/visualisierung/songs/ComeOnDown.mp3"
   },
   nr3: {
-    titel: "Chevron by Cult of Luna" ,
-    src: "https://311576-17.web1.fh-htwchur.ch/visualisierung/songs/Chevron.mp3"
-  },
-  nr4: {
     titel: "Nazareth" ,
     src: "https://311576-17.web1.fh-htwchur.ch/visualisierung/songs/Nazareth.mp3"
   },
-  nr5: {
+  nr4: {
     titel: "rainbow" ,
     src: "https://311576-17.web1.fh-htwchur.ch/visualisierung/songs/rainbow.mp3"
   },
-  nr6: {
-    titel: "Surprise Yourself" ,
-    src:"https://311576-17.web1.fh-htwchur.ch/visualisierung/songs/SurpriseYourself.mp3"
-  },
-  nr7: {
+  nr5: {
     titel: "Sacrilegium by Zeal&Ardor" ,
     src:"https://311576-17.web1.fh-htwchur.ch/visualisierung/songs/Sacrilegium.mp3"
   },
-  nr8: {
-    titel: "The Love You're Given" ,
-    src:"https://311576-17.web1.fh-htwchur.ch/visualisierung/songs/TheLoveYoureGiven.mp3"
-  },
-  nr9: {
+  nr6: {
     titel: "Beethoven" ,
     src:"https://311576-17.web1.fh-htwchur.ch/visualisierung/songs/beethoven.mp3"
+  },
+  nr7: {
+    titel: "bohemian rhapsody" ,
+    src:"https://311576-17.web1.fh-htwchur.ch/visualisierung/songs/queen.mp3"
+  },
+  nr8: {
+    titel: "tonleiter" ,
+    src:"https://311576-17.web1.fh-htwchur.ch/visualisierung/songs/tonleiter_01.mp3"
   }
 }
 
@@ -49,10 +45,11 @@ document.getElementById('btnCreateCtx').addEventListener('click', function() {
   let ctx = new AudioContext();
   let audio = document.getElementById('myAudio');
   let audioSrc = ctx.createMediaElementSource(audio);
-  let analyser = ctx.createAnalyser();
+  const analyser = ctx.createAnalyser();
 
   audioSrc.connect(analyser);
-  audioSrc.connect(ctx.destination);
+  // audioSrc.connect(ctx.destination);
+  analyser.connect(ctx.destination);
 
   // get Canvas from HTML and create canvasCtx
   let canvas = document.getElementById('canvasCtx');
@@ -61,10 +58,10 @@ document.getElementById('btnCreateCtx').addEventListener('click', function() {
   HEIGHT = canvas.height;
   canvasCtx.clearRect(0, 0, WIDTH, HEIGHT);
 
-  analyser.fftSize = 64;
+  analyser.fftSize = 512;
   let bufferLength = analyser.frequencyBinCount; // frequencyBinCount tells you how many values you'll receive from the analyser
   let frequencyData = new Uint8Array(bufferLength); // The Uint8Array typed array represents an array of 8-bit unsigned integers
-  let floatData = new Float32Array(1);
+  let floatData = new Float32Array(bufferLength);
   let timeData = new Uint8Array(bufferLength);
 
   // console sample Rate
@@ -107,6 +104,7 @@ document.getElementById('btnCreateCtx').addEventListener('click', function() {
      let amplitude = (frequencyData.reduce(reducer)/bufferLength);
 
      analyser.getFloatFrequencyData(floatData);
+     console.log(floatData);
      //ANIMATION RECT
      canvasCtx.fillRect(0, 0, WIDTH, HEIGHT); // 0 0 --> position WIDTH HEIGHT --> höhe breite
 
@@ -130,7 +128,7 @@ document.getElementById('btnCreateCtx').addEventListener('click', function() {
          canvasCtx.fillRect(0,y,barWidth,barHeight); // ctx.fillRect(x, y, largeur, hauteur);
 
          // x ist Abstand zwischen Bars
-         y -= barHeight;
+         y = y-(barHeight*2);
 
          canvasCtx.beginPath();
          canvasCtx.arc((canvas.width / 2), (canvas.height / 2), amplitude, 0, 2 * Math.PI);
