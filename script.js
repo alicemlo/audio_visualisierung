@@ -1,40 +1,31 @@
 // CREATE SONGS
 let songs= {
   nr0: {
-    titel: "Frequency Spectrum" ,
-    src: "https://311576-17.web1.fh-htwchur.ch/visualisierung/songs/Spectrum.mp3"
+    titel: "Frequency Spectrum" , src: "Spectrum.mp3"
   },
   nr1: {
-    titel: "Seen a Good Man by Swain" ,
-    src: "https://311576-17.web1.fh-htwchur.ch/visualisierung/songs/Seen-a-Good-Man.mp3"
+    titel: "Seen a Good Man by Swain" , src: "Seen-a-Good-Man.mp3"
   },
   nr2: {
-    titel: "Come On Down",
-    src: "https://311576-17.web1.fh-htwchur.ch/visualisierung/songs/ComeOnDown.mp3"
+    titel: "Come On Down", src: "ComeOnDown.mp3"
   },
   nr3: {
-    titel: "Nazareth" ,
-    src: "https://311576-17.web1.fh-htwchur.ch/visualisierung/songs/Nazareth.mp3"
+    titel: "Nazareth" , src: "Nazareth.mp3"
   },
   nr4: {
-    titel: "rainbow" ,
-    src: "https://311576-17.web1.fh-htwchur.ch/visualisierung/songs/rainbow.mp3"
+    titel: "rainbow" , src: "rainbow.mp3"
   },
   nr5: {
-    titel: "Sacrilegium by Zeal&Ardor" ,
-    src:"https://311576-17.web1.fh-htwchur.ch/visualisierung/songs/Sacrilegium.mp3"
+    titel: "Sacrilegium by Zeal&Ardor" , src:"Sacrilegium.mp3"
   },
   nr6: {
-    titel: "Beethoven" ,
-    src:"https://311576-17.web1.fh-htwchur.ch/visualisierung/songs/beethoven.mp3"
+    titel: "Beethoven" , src:"beethoven.mp3"
   },
   nr7: {
-    titel: "bohemian rhapsody" ,
-    src:"https://311576-17.web1.fh-htwchur.ch/visualisierung/songs/queen.mp3"
+    titel: "bohemian rhapsody" , src:"queen.mp3"
   },
   nr8: {
-    titel: "tonleiter" ,
-    src:"https://311576-17.web1.fh-htwchur.ch/visualisierung/songs/tonleiter_01.mp3"
+    titel: "tonleiter" , src:"tonleiter_01.mp3"
   }
 }
 
@@ -47,6 +38,7 @@ document.getElementById('btnCreateCtx').addEventListener('click', function() {
   let audioSrc = ctx.createMediaElementSource(audio);
   const analyser = ctx.createAnalyser();
 
+  console.log(audio);
   audioSrc.connect(analyser);
   // audioSrc.connect(ctx.destination);
   analyser.connect(ctx.destination);
@@ -80,8 +72,8 @@ document.getElementById('btnCreateCtx').addEventListener('click', function() {
     btn = buttons;
 
     btn.addEventListener("click", function(){
-      console.log(this);
-      audio.src = source;
+      audio.src = "songs/"+source;
+      console.log(audio);
       audio.play();
     });
   }
@@ -97,14 +89,14 @@ document.getElementById('btnCreateCtx').addEventListener('click', function() {
      canvasCtx.fillStyle = 'rgb(0, 0, 0)';
      // update data in frequencyData
      analyser.getByteFrequencyData(frequencyData);
-     console.log(frequencyData);
+     // console.log(frequencyData);
 
      // Lautstärke berechnen (Summe aller Amplituden)
      const reducer = (accumulator, currentValue) => accumulator + currentValue;
      let amplitude = (frequencyData.reduce(reducer)/bufferLength);
 
      analyser.getFloatFrequencyData(floatData);
-     console.log(floatData);
+     // console.log(floatData);
      //ANIMATION RECT
      canvasCtx.fillRect(0, 0, WIDTH, HEIGHT); // 0 0 --> position WIDTH HEIGHT --> höhe breite
 
