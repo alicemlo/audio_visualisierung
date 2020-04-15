@@ -12,9 +12,6 @@ let songs= {
   nr3: {
     titel: "Nazareth" , src: "Nazareth.mp3"
   },
-  nr4: {
-    titel: "rainbow" , src: "rainbow.mp3"
-  },
   nr5: {
     titel: "Sacrilegium by Zeal&Ardor" , src:"Sacrilegium.mp3"
   },
