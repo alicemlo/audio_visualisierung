@@ -35,7 +35,7 @@ document.getElementById('btnCreateCtx').addEventListener('click', function() {
   let audioSrc = ctx.createMediaElementSource(audio);
   const analyser = ctx.createAnalyser();
 
-  console.log(audio);
+  //console.log(audio);
   audioSrc.connect(analyser);
   // audioSrc.connect(ctx.destination);
   analyser.connect(ctx.destination);
@@ -46,6 +46,14 @@ document.getElementById('btnCreateCtx').addEventListener('click', function() {
   WIDTH = canvas.width;
   HEIGHT = canvas.height;
   canvasCtx.clearRect(0, 0, WIDTH, HEIGHT);
+
+  // get CanvasB from HTML and create canvasCtx
+  let canvasB = document.getElementById('canvasBctx');
+  let canvasBctx = canvasB.getContext("2d");
+  WIDTHB = canvasB.width;
+  HEIGHTB = canvasB.height;
+  canvasBctx.clearRect(0, 0, WIDTHB, HEIGHTB);
+
 
   analyser.fftSize = 512;
   let bufferLength = analyser.frequencyBinCount; // frequencyBinCount tells you how many values you'll receive from the analyser
@@ -70,7 +78,7 @@ document.getElementById('btnCreateCtx').addEventListener('click', function() {
 
     btn.addEventListener("click", function(){
       audio.src = "songs/"+source;
-      console.log(audio);
+      // console.log(audio);
       audio.play();
     });
   }
@@ -80,25 +88,59 @@ document.getElementById('btnCreateCtx').addEventListener('click', function() {
     audio.pause();
   });
 
+
+  // DRAW PLAYER
+  function drawPlayer(){
+    drawVisual2 = requestAnimationFrame(drawPlayer);
+
+    // ANALYSER frequencyData
+    analyser.getByteFrequencyData(frequencyData);
+    // console.log(frequencyData);
+
+    // Lautstärke berechnen (Summe aller Amplituden)
+    const reducer = (accumulator, currentValue) => accumulator + currentValue;
+    let amplitude = (frequencyData.reduce(reducer)/bufferLength);
+
+    canvasBctx.lineWidth = 1;
+    canvasBctx.strokeStyle = '#FFFFFF';
+
+    // DRAW A LINE
+     let strokeX = ctx.currentTime;
+     let strokeY = amplitude;
+     canvasBctx.beginPath();
+     // canvasBctx.moveTo(strokeX, HEIGHTB);
+     // canvasBctx.lineTo(strokeX, strokeY);
+     // canvasBctx.stroke();
+     // console.log(strokeY);
+
+     canvasBctx.fillStyle = 'rgb(255,255, 255)';
+     canvasBctx.fillRect(strokeX,strokeY,1,1);
+
+  }
+
   // DRAW
   function draw() {
      drawVisual = requestAnimationFrame(draw);
-     canvasCtx.fillStyle = 'rgb(0, 0, 0)';
-     // update data in frequencyData
+
+     // ANALYSER frequencyData
      analyser.getByteFrequencyData(frequencyData);
      // console.log(frequencyData);
+
+    // ANALYSER FLOAT DATA
+    analyser.getFloatFrequencyData(floatData);
+    // console.log(floatData);
+
+    // ANALYSER TIME DOMAIN DATA
+    analyser.getByteTimeDomainData(timeData);
+    // console.log(timeData);
 
      // Lautstärke berechnen (Summe aller Amplituden)
      const reducer = (accumulator, currentValue) => accumulator + currentValue;
      let amplitude = (frequencyData.reduce(reducer)/bufferLength);
 
-     analyser.getFloatFrequencyData(floatData);
-     // console.log(floatData);
      //ANIMATION RECT
+     canvasCtx.fillStyle = 'rgb(0, 0, 0)';
      canvasCtx.fillRect(0, 0, WIDTH, HEIGHT); // 0 0 --> position WIDTH HEIGHT --> höhe breite
-
-     analyser.getByteTimeDomainData(timeData);
-     //console.log(timeData);
 
      // get current Time
      // console.log(ctx.currentTime);
@@ -108,25 +150,27 @@ document.getElementById('btnCreateCtx').addEventListener('click', function() {
      let barHeight = (HEIGHT / bufferLength);
      let y = HEIGHT; // y für y-position der bars
 
+
+
      for(let i = 0; i < bufferLength; i++) {
-
          barWidth = frequencyData[i]*3.1372;
-
          canvasCtx.fillStyle = 'rgb(' + (255-frequencyData[i]) + ',' +(frequencyData[i]-40)+',' +frequencyData[i] +')';
-
          canvasCtx.fillRect(0,y,barWidth,barHeight); // ctx.fillRect(x, y, largeur, hauteur);
 
          // x ist Abstand zwischen Bars
          y = y-(barHeight*2);
 
-         canvasCtx.beginPath();
-         canvasCtx.arc((canvas.width / 2), (canvas.height / 2), amplitude, 0, 2 * Math.PI);
-         canvasCtx.lineWidth = 1;
-         canvasCtx.strokeStyle = '#FFFFFF';
-         canvasCtx.stroke();
+        // LAUTSTÄRKE KREIS
+        // canvasCtx.beginPath();
+        // canvasCtx.arc((canvas.width / 2), (canvas.height / 2), amplitude, 0, 2 * Math.PI);
+        // canvasCtx.lineWidth = 1;
+        // canvasCtx.strokeStyle = '#FFFFFF';
+        // canvasCtx.stroke();
       }
+
   } // END DRAW
 
   draw();
+  drawPlayer();
 
 });

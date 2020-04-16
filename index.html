@@ -2,20 +2,29 @@
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">
-    <title>ton</title>
+    <title>audio visualisierung</title>
     <style>
       *{
         margin: 0;
       }
 
       canvas{
-        background-color: black;
+        position:absolute;
+        left:0px;
+        top:0px;
       }
+
+      #canvasCtx{z-index: 1; background-color: black;}
+      #canvasBctx{z-index: 3}
+
+      button{margin-top: 600px;}
+
 
     </style>
   </head>
   <body>
     <canvas id="canvasCtx" width="800" height="600"></canvas><br>
+    <canvas id="canvasBctx" width="800" height="600"></canvas><br>
 
     <audio id="myAudio" src="Seen-a-Good-Man.mp3"></audio>
 
