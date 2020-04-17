@@ -93,7 +93,7 @@ document.getElementById('btnCreateCtx').addEventListener('click', function() {
 
   function span(amplitude){
         i=amplitude;
-        r=i*5;
+        r=i*7;
 
         let x = r*Math.sin(r)+(h/2);
         let y = r*Math.cos(r)+(w/2);
