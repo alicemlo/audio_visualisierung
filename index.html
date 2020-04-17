@@ -2,35 +2,57 @@
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">
-    <title>audio visualisierung</title>
+    <title>Audio visualisierung</title>
     <style>
       *{
         margin: 0;
       }
-
-      canvas{
-        position:absolute;
-        left:0px;
-        top:0px;
+      body{
+        background-color: black;
+        color: white;
       }
 
-      #canvasCtx{z-index: 1; background-color: black;}
-      #canvasBctx{z-index: 3}
+      span{
+        height: 0px;
+        width: 0px;
+        background-color: lightblue;
+        border-radius: 50%;
+        position: absolute;
+        top: 400px;
+        left: 300px;
+        opacity: 0;
+      }
 
-      button{margin-top: 600px;}
+      .fade{
+        animation: fade 3s linear;
+      }
 
+      @keyframes fade {
+        0%{
+          height: 12px;
+          width: 12px;
+          opacity: 1;
+        }
+        100% {
+          opacity: 0;
+          height: 0px;
+          width: 0px;
+        }
+      }
 
+      .inactive{
+        display: none !important;
+      }
     </style>
   </head>
   <body>
-    <canvas id="canvasCtx" width="800" height="600"></canvas><br>
-    <canvas id="canvasBctx" width="800" height="600"></canvas><br>
+    <button id="btnStop" type="button" name="button">stop</button>
 
     <audio id="myAudio" src="Seen-a-Good-Man.mp3"></audio>
 
     <button id="btnCreateCtx" type="button" name="button">create context</button>
 
-    <button id="btnStop" type="button" name="button">stop</button>
-    <script src="script.js"></script>
+    <!-- chose script 3 or 4 -->
+    <script src="script4.js"></script>
   </body>
 </html>

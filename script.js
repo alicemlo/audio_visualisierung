@@ -1,14 +1,5 @@
 // CREATE SONGS
 let songs= {
-  nr0: {
-    titel: "Frequency Spectrum" , src: "Spectrum.mp3"
-  },
-  nr1: {
-    titel: "Seen a Good Man by Swain" , src: "Seen-a-Good-Man.mp3"
-  },
-  nr2: {
-    titel: "Come On Down", src: "ComeOnDown.mp3"
-  },
   nr3: {
     titel: "Nazareth" , src: "Nazareth.mp3"
   },
@@ -20,9 +11,6 @@ let songs= {
   },
   nr7: {
     titel: "bohemian rhapsody" , src:"queen.mp3"
-  },
-  nr8: {
-    titel: "tonleiter" , src:"tonleiter_01.mp3"
   }
 }
 
@@ -55,7 +43,7 @@ document.getElementById('btnCreateCtx').addEventListener('click', function() {
   canvasBctx.clearRect(0, 0, WIDTHB, HEIGHTB);
 
 
-  analyser.fftSize = 512;
+  analyser.fftSize = 64;
   let bufferLength = analyser.frequencyBinCount; // frequencyBinCount tells you how many values you'll receive from the analyser
   let frequencyData = new Uint8Array(bufferLength); // The Uint8Array typed array represents an array of 8-bit unsigned integers
   let floatData = new Float32Array(bufferLength);
@@ -94,29 +82,35 @@ document.getElementById('btnCreateCtx').addEventListener('click', function() {
     drawVisual2 = requestAnimationFrame(drawPlayer);
 
     // ANALYSER frequencyData
-    analyser.getByteFrequencyData(frequencyData);
+    analyser.getByteTimeDomainData(frequencyData);
     // console.log(frequencyData);
 
     // Lautstärke berechnen (Summe aller Amplituden)
     const reducer = (accumulator, currentValue) => accumulator + currentValue;
-    let amplitude = (frequencyData.reduce(reducer)/bufferLength);
+    let amplitude = ((frequencyData.reduce(reducer)/bufferLength));
 
     canvasBctx.lineWidth = 1;
     canvasBctx.strokeStyle = '#FFFFFF';
+    canvasBctx.beginPath();
 
     // DRAW A LINE
-     let strokeX = ctx.currentTime;
-     let strokeY = amplitude;
-     canvasBctx.beginPath();
-     // canvasBctx.moveTo(strokeX, HEIGHTB);
-     // canvasBctx.lineTo(strokeX, strokeY);
-     // canvasBctx.stroke();
-     // console.log(strokeY);
+     let sliceWidth = WIDTHB * 1.0 / bufferLength;
+     let x = 0;
 
-     canvasBctx.fillStyle = 'rgb(255,255, 255)';
-     canvasBctx.fillRect(strokeX,strokeY,1,1);
-
+     // console.log(amplitude);
+     for(let i = 0; i < bufferLength; i++) {
+       if(i === 0) {
+        canvasBctx.moveTo(x, amplitude);
+      }else{
+        canvasBctx.lineTo(x, amplitude);
+      }
+        x+=sliceWidth;
+        // canvasBctx.moveTo(ctx.currentTime, amplitude);
+        canvasBctx.stroke();
+     }
   }
+
+  let volHistory = [];
 
   // DRAW
   function draw() {
@@ -127,16 +121,24 @@ document.getElementById('btnCreateCtx').addEventListener('click', function() {
      // console.log(frequencyData);
 
     // ANALYSER FLOAT DATA
-    analyser.getFloatFrequencyData(floatData);
+    // analyser.getFloatFrequencyData(floatData);
     // console.log(floatData);
 
     // ANALYSER TIME DOMAIN DATA
-    analyser.getByteTimeDomainData(timeData);
+    // analyser.getByteTimeDomainData(timeData);
     // console.log(timeData);
 
      // Lautstärke berechnen (Summe aller Amplituden)
      const reducer = (accumulator, currentValue) => accumulator + currentValue;
      let amplitude = (frequencyData.reduce(reducer)/bufferLength);
+
+       volHistory.push(amplitude);
+       // console.log(volHistory);
+       for (var i = 0; i < volHistory.length; i++) {
+        console.log(volHistory[i]);
+        canvasCtx.fillStyle = 'rgb(255, 255, 255)';
+        canvasCtx.fillRect((300+ctx.currentTime),(300-volHistory[i]),10,15);
+       }
 
      //ANIMATION RECT
      canvasCtx.fillStyle = 'rgb(0, 0, 0)';
@@ -151,26 +153,19 @@ document.getElementById('btnCreateCtx').addEventListener('click', function() {
      let y = HEIGHT; // y für y-position der bars
 
 
-
-     for(let i = 0; i < bufferLength; i++) {
-         barWidth = frequencyData[i]*3.1372;
-         canvasCtx.fillStyle = 'rgb(' + (255-frequencyData[i]) + ',' +(frequencyData[i]-40)+',' +frequencyData[i] +')';
-         canvasCtx.fillRect(0,y,barWidth,barHeight); // ctx.fillRect(x, y, largeur, hauteur);
-
-         // x ist Abstand zwischen Bars
-         y = y-(barHeight*2);
-
-        // LAUTSTÄRKE KREIS
-        // canvasCtx.beginPath();
-        // canvasCtx.arc((canvas.width / 2), (canvas.height / 2), amplitude, 0, 2 * Math.PI);
-        // canvasCtx.lineWidth = 1;
-        // canvasCtx.strokeStyle = '#FFFFFF';
-        // canvasCtx.stroke();
-      }
+     // for(let i = 0; i < bufferLength; i++) {
+     //     barWidth = frequencyData[i]*3.1372;
+     //     canvasCtx.fillStyle = 'rgb(' + (255-frequencyData[i]) + ',' +(frequencyData[i]-40)+',' +frequencyData[i] +')';
+     //     canvasCtx.fillRect(0,y,barWidth,barHeight); // ctx.fillRect(x, y, largeur, hauteur);
+     //
+     //     // x ist Abstand zwischen Bars
+     //     y = y-(barHeight*2);
+     //
+     //  }
 
   } // END DRAW
 
   draw();
-  drawPlayer();
+  //drawPlayer();
 
 });
