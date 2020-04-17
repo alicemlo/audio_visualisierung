@@ -31,7 +31,7 @@ document.getElementById('btnCreateCtx').addEventListener('click', function() {
   // audioSrc.connect(ctx.destination);
   analyser.connect(ctx.destination);
 
-  analyser.fftSize = 1024;
+  analyser.fftSize = 512;
   let bufferLength = analyser.frequencyBinCount; // frequencyBinCount tells you how many values you'll receive from the analyser
   let frequencyData = new Uint8Array(bufferLength); // The Uint8Array typed array represents an array of 8-bit unsigned integers
   let timeData = new Uint8Array(bufferLength);
@@ -53,7 +53,6 @@ document.getElementById('btnCreateCtx').addEventListener('click', function() {
     btn.addEventListener("click", function(){
       audio.src = "songs/"+source;
       // console.log(audio);
-
       audio.play();
     });
   }
@@ -63,33 +62,12 @@ document.getElementById('btnCreateCtx').addEventListener('click', function() {
     audio.pause();
   });
 
-
-  let volHistory = [];
-  let count = 0;
-
   // DRAW
   function draw(amplitude) {
-     // analyser.getByteFrequencyData(frequencyData);
-     // console.log(frequencyData);
-
-    // ANALYSER TIME DOMAIN DATA
-    // analyser.getByteTimeDomainData(timeData);
-    // console.log(timeData);
-
-    // Lautstärke berechnen (Summe aller Amplituden)
-
        if(audio.paused == false){
-         if(count>32){
-           volHistory.shift();
-         }else{
-           count++;
-         }
-
-         volHistory.push(amplitude);
          span(amplitude);
        }
-
-  } // END DRAW
+  }
 
   function span(amplitude){
         i=amplitude;

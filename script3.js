@@ -16,6 +16,10 @@ let songs= {
 document.getElementById('btnCreateCtx').addEventListener('click', function() {
   document.getElementById('btnCreateCtx').style.display ="none";
 
+  var w = window.innerWidth;
+  var h = window.innerHeight;
+
+
   //create Context, audio and analyser
   let ctx = new AudioContext();
   let audio = document.getElementById('myAudio');
@@ -49,7 +53,6 @@ document.getElementById('btnCreateCtx').addEventListener('click', function() {
     btn.addEventListener("click", function(){
       audio.src = "songs/"+source;
       // console.log(audio);
-
       audio.play();
     });
   }
@@ -72,7 +75,7 @@ document.getElementById('btnCreateCtx').addEventListener('click', function() {
 
        if(audio.paused == false){
          if(count>50){
-           volHistory.shift();
+           volHistory.shift(); // löscht erstes Element
          }else{
            count++;
          }
@@ -82,11 +85,8 @@ document.getElementById('btnCreateCtx').addEventListener('click', function() {
          for (var i = 0; i < volHistory.length; i++) {
           // console.log(volHistory[i]);
           r=volHistory[i]*6;
-          let x = r*Math.sin(i)+400;
-          let y =r*Math.cos(i)+500;
-
-          // console.log("X: "+x);
-          // console.log("y: "+y);
+          let x = r*Math.sin(i)+(h/2);
+          let y =r*Math.cos(i)+(w/2);
 
           let span = document.createElement("SPAN");
           span.style.top=x+'px';
